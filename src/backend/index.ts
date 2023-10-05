@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import { CreateQuiz } from "../types/quiz"
 import { useAppSelector } from "../redux"
 
+// To do: get the backend url from the environment variables
 export const backendBaseUrl = "http://localhost:4000"
 
 export type HTTPMethod = "GET" | "POST" | "DELETE" | "PUT"
