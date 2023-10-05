@@ -13,11 +13,9 @@ export function useAuth(){
     const dispatch = useDispatch()
 
     function logout(){
-        dispatch(authActions.clearTokens())
         localStorage.removeItem(localStorageTokenKey)
+        dispatch(authActions.clearTokens())
     }
-
-    
 
     async function login(username: string, password: string){
         return authenticate(() => API.login(username, password), dispatch)

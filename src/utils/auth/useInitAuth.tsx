@@ -6,7 +6,7 @@ import { authenticate } from "./common";
 import { useDispatch } from "react-redux";
 
 function useJWTRefresh(){
-    const timer = useRef()
+    const timer = useRef<NodeJS.Timeout>()
     const auth = useAuth()
     const tokens = auth?.tokens
 
@@ -25,9 +25,7 @@ function useJWTRefresh(){
 
         const timeBeforeExpires = Number(tokens.parsedAccessToken?.exp) * 1000 - Date.now()
 
-        console.log(timeBeforeExpires)
-
-        setTimeout(refresh, timeBeforeExpires)
+        timer.current = setTimeout(refresh, timeBeforeExpires)
     }, [tokens])
 
     async function refresh(){
@@ -42,7 +40,6 @@ export function useInitAuth(){
 
     function setStoreFromLocalStorage(){
         const localStorageValue = localStorage.getItem(localStorageTokenKey)
-        console.log(localStorageValue)
         if(localStorageValue){
             try{
                 dispatch(authActions.setTokens(JSON.parse(localStorageValue)))
