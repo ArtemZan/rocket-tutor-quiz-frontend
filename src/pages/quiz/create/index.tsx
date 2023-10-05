@@ -12,6 +12,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { StoreStateType, useAppSelector } from "../../../redux";
 import { newQuizActions } from "../../../redux/slices/newQuiz";
 
+
+function validateOptionsUnique(options: Option[]) {
+    // Not using Array.some or Array.find for the sake of better performance
+    for (let i1 = 0; i1 < options.length - 1; i1++) {
+        for (let i2 = i1 + 1; i2 < options.length; i2++) {
+            if (options[i1].value?.trim() === options[i2].value?.trim()) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 function CreateQuiz() {
     const quiz = useAppSelector(store => store.newQuiz.quiz)
     const dispatch = useDispatch()
@@ -29,7 +43,7 @@ function CreateQuiz() {
 
     // Returns whether the data is valid
     function validate() {
-        if(!quiz){
+        if (!quiz) {
             console.log("No quiz")
             return
         }
@@ -46,6 +60,11 @@ function CreateQuiz() {
 
         if (quiz?.options.some(op => !op.value)) {
             setError("Empty choices are not allowed")
+            return
+        }
+
+        if (!validateOptionsUnique(quiz?.options)) {
+            setError("The answers must be unique")
             return
         }
 
