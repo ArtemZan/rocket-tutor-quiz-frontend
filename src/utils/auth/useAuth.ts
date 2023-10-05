@@ -1,14 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "../../redux";
+import { useDispatch } from "react-redux";
 import { useMemo } from "react";
 import { authActions } from "../../redux/slices/auth";
 import { useBackend } from "../../backend";
 import { authenticate } from "./common";
+import { useAppSelector } from "../../redux";
 
 export const localStorageTokenKey = "JWT"
 
 export function useAuth(){
-    const authState = useSelector<StateType, StateType["auth"]>(state => state.auth)
+    const authState = useAppSelector(store => store.auth)
     const API = useBackend()
     const dispatch = useDispatch()
 

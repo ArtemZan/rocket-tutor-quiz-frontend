@@ -9,4 +9,7 @@ export type Quiz = {
     id: number
     question: string
     options: Option[]
+    author: {
+        name: string
+    }
 }

@@ -1,4 +1,4 @@
-import { SliceCaseReducers, ValidateSliceCaseReducers, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 
 type StateType = {

@@ -1,9 +1,6 @@
 import { useMemo } from "react"
-import { useAuth } from "../utils/auth/useAuth"
 import { CreateQuiz } from "../types/quiz"
-import { useSelector } from "react-redux"
-import { StateType } from "../redux"
-import { Option } from "../pages/quiz/types"
+import { useAppSelector } from "../redux"
 
 export const backendBaseUrl = "http://localhost:4000"
 
@@ -70,7 +67,7 @@ function toQuery(object: { [key: string]: string | number }) {
 }
 
 export function useBackend() {
-    const authState = useSelector<StateType, StateType["auth"]>(state => state.auth)
+    const authState = useAppSelector(state => state.auth)
     const accessToken = authState.tokens.accessToken
 
     function sendRequestWithAuth(options: SendRequestOptions) {

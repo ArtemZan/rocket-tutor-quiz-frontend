@@ -8,10 +8,14 @@ import { useBackend } from "../../../backend";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../utils/auth/useAuth";
 import { LoadingPanel } from "../../../utils/LoadingPanel";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreStateType, useAppSelector } from "../../../redux";
+import { newQuizActions } from "../../../redux/slices/newQuiz";
 
 function CreateQuiz() {
-    const [question, setQuestion] = useState("")
-    const [options, setOptions] = useState<Option[]>([])
+    const quiz = useAppSelector(store => store.newQuiz.quiz)
+    const dispatch = useDispatch()
+
     const [notification, setNotification] = useState<{
         isVisible: boolean
         severity?: AlertColor
@@ -25,22 +29,27 @@ function CreateQuiz() {
 
     // Returns whether the data is valid
     function validate() {
-        if (!question) {
+        if(!quiz){
+            console.log("No quiz")
+            return
+        }
+
+        if (!quiz?.question) {
             setError("Enter your question")
             return
         }
 
-        if (!options || options.length < 2) {
+        if (!quiz?.options || quiz?.options.length < 2) {
             setError("You must provide at least 2 choices")
             return
         }
 
-        if (options.some(op => !op.value)) {
+        if (quiz?.options.some(op => !op.value)) {
             setError("Empty choices are not allowed")
             return
         }
 
-        if (!options.some(op => op.isAnswer)) {
+        if (!quiz?.options.some(op => op.isAnswer)) {
             setError("Choose at least 1 answer as correct")
             return
         }
@@ -56,10 +65,10 @@ function CreateQuiz() {
 
         setIsLoading(true)
         setError(null)
-        
+
         const resp = await API.createQuiz({
-            question,
-            options: options.map(op => {
+            ...quiz,
+            options: quiz?.options.map(op => {
                 const { id, ...withoutId } = op
                 return withoutId
             })
@@ -76,8 +85,7 @@ function CreateQuiz() {
             isVisible: true
         })
 
-        setOptions([])
-        setQuestion("")
+        dispatch(newQuizActions.reset())
     }
 
     return <Paper
@@ -97,15 +105,13 @@ function CreateQuiz() {
                 label="Enter your question"
                 size="small"
                 name="quiz question"
-                value={question}
-                onChange={e => setQuestion(e.target.value)}
+                value={quiz?.question}
+                onChange={e => dispatch(newQuizActions.setQuestion(e.target.value))}
             />
 
 
             <Options
-                error={error}
-                options={options}
-                setOptions={setOptions} />
+                error={error} />
 
             <Button
                 variant="contained"

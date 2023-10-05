@@ -20,8 +20,12 @@ function Quiz({ quiz }: { quiz: QuizType }) {
 
     return <Accordion>
         <AccordionSummary>
-            <Typography>
+            <Typography textOverflow="ellipsis" overflow="hidden" style={{wordBreak: "break-all"}}
+            maxHeight={200}>
                 {quiz.question}
+            </Typography>
+            <Typography marginLeft="auto" paddingLeft="1em" whiteSpace="nowrap">
+                Author: {quiz.author.name || "Unknown"}
             </Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: "flex", flexDirection: "column" }}>

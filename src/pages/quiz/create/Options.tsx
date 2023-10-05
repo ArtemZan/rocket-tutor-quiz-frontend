@@ -2,6 +2,9 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Button, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Stack, TextField, Typography, Checkbox } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material"
 import { Option } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import { newQuizActions } from "../../../redux/slices/newQuiz";
+import { StoreStateType, useAppSelector } from "../../../redux";
 
 type UpdateOption = { id: number } & Partial<Option>
 
@@ -34,48 +37,45 @@ function Option(props: OptionProps) {
 
 type OptionsProps = {
     error?: string
-    options: Option[],
-    setOptions: Dispatch<SetStateAction<Option[]>>
 }
 
 export function Options(props: OptionsProps) {
     const lastId = useRef(0)
+    const dispatch = useDispatch()
+    const options = useAppSelector(store => store.newQuiz?.quiz?.options)
 
     function addOption() {
         const newId = ++lastId.current
 
-        props.setOptions(options => [...(options || []), {
+        dispatch(newQuizActions.addOption({
             id: newId,
             value: "",
             isAnswer: false
-        }])
+        }))
+
+        //props.setOptions(options => [...(options || []), ])
     }
 
     function updateOption(update: UpdateOption) {
-        props.setOptions(options => options?.map(option => option.id !== update.id ?
-            option :
-            {
-                ...option,
-                ...update
-            }))
+        dispatch(newQuizActions.updateOptionById({updated: update, optionId: update.id }))
     }
 
     function deleteOption(id: number) {
-        props.setOptions(options => options?.filter(option => option.id !== id))
+        dispatch(newQuizActions.deleteOptionById({ id }))
     }
 
     return <Stack direction="column" width="100%">
         <Stack
             gap="1em">
 
-            {props.options?.map(option => <Option
+            {options?.map(option => <Option
                 key={option.id}
                 option={option}
                 updateOption={updateOption}
                 deleteOption={deleteOption} />)}
         </Stack>
 
-        {props.options?.length ? <Typography marginTop="0.5em" fontSize="small" textAlign="center">(Select the correct answers)</Typography> : null}
+        {options?.length ? <Typography marginTop="0.5em" fontSize="small" textAlign="center">(Select the correct answers)</Typography> : null}
 
         <Typography color="error">{props.error}</Typography>
 
