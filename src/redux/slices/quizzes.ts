@@ -3,10 +3,14 @@ import { Quiz } from "../../types/quiz";
 
 export const quizzesSlice = createSlice({
     initialState: {
-        displayed: [] as Quiz[]
+        displayed: [] as Quiz[],
+        total: 0
     },
     name: "quizzes",
     reducers: {
+        setTotal: (state, action: { payload: number }) => {
+            state.total = action.payload
+        },
         setQuizes: (state, action: { payload: Quiz[] }) => {
             state.displayed = action.payload
         },
@@ -39,4 +43,4 @@ export const quizzesSlice = createSlice({
     }
 })
 
-export const quizzesAction = quizzesSlice.actions
+export const quizzesActions = quizzesSlice.actions
